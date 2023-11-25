@@ -28,6 +28,23 @@ def solve_dual_mod(eqs):
     return results
 
 
+def partial_shuffle(string, salt):
+    """Reorders `string` according to `salt`."""
+    len_salt = len(salt)
+
+    string = list(string)
+    index, integer_sum = 0, 0
+    for i in range(len(string) - 1, len(string) - len(salt) - 1, -1):
+        integer = ord(salt[index])
+        integer_sum += integer
+        j = (integer + index + integer_sum) % i
+        string[i], string[j] = string[j], string[i]
+        index = (index + 1) % len_salt
+    string = ''.join(string)
+
+    return string
+
+
 before_first_shuffle = 'abdegjklmnopqrvwxyzABDEGJKLMNOPQRVWXYZ1234567890'  # default alphabet
 after_first_shuffle = ''
 for i in range(44):
@@ -43,11 +60,13 @@ if encode_oracle(44)[0] != after_first_shuffle[0]:
 
 salt = ""
 for idx in range(0, 42):
+    print(f"Attempting to find salt[{idx}]:")
     equations = []
 
     # first shuffle
     char = after_first_shuffle[-1 - idx]
-    original_pos = before_first_shuffle.index(char)
+    intermediate_alphabet = partial_shuffle(before_first_shuffle, salt)
+    original_pos = intermediate_alphabet.index(char)
     new_pos = 47 - idx
     integer_sum = sum([ord(c) for c in salt[0:idx]])
     salt_sum = (original_pos - integer_sum - idx) % new_pos
