@@ -92,6 +92,7 @@ for idx in range(0, 42):
     # combine
     candidates = solve_dual_mod(equations)
     candidates = [c for c in candidates if 32 <= c <= 126]  # assume ASCII
+    # candidates = [c for c in candidates if 48 <= c <= 122]  # assume alphanumeric
 
     if len(candidates) == 1:
         salt += chr(candidates[0])
