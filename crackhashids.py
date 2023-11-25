@@ -30,15 +30,17 @@ if encode_oracle(44)[0] != after_first_shuffle[0]:
     raise RuntimeError("The alphabet length is different than expected.")
 
 salt = ''
-for idx in range(0, 2):
+for idx in range(0, 42):
     equations = []
 
     char = after_first_shuffle[-1 - idx]
     original_pos = before_first_shuffle.index(char)
     new_pos = 47 - idx
+    integer_sum = sum([ord(c) for c in salt[0:idx]])
+    salt_sum = (original_pos - integer_sum - idx) % new_pos
     print(f"{char}: {original_pos} -> {new_pos}")
-    print(f"2 x salt[{idx}] = {original_pos} mod {new_pos}")
-    equations.append((original_pos, new_pos))
+    print(f"2 x salt[{idx}] = {original_pos} - {integer_sum} - {idx} = {salt_sum} mod {new_pos}")
+    equations.append((salt_sum, new_pos))
 
     request = (42 - idx) * 44 + 43
     result = encode_oracle(request)
@@ -48,7 +50,7 @@ for idx in range(0, 2):
     new_pos = 43 - idx
     mod = new_pos - 1
     lottery = result[0]
-    integer_sum = ord(lottery) # + salt[0..idx]
+    integer_sum = ord(lottery) + sum([ord(c) for c in salt[0:idx]])
     salt_sum = (original_pos - integer_sum - idx - 1) % mod
     print(f"2 x salt[{idx}] = {original_pos} - {integer_sum} - {idx + 1} = {salt_sum} mod {mod}")
     equations.append((salt_sum, mod))
