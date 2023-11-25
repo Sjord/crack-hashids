@@ -91,6 +91,8 @@ for idx in range(0, 42):
 
     # combine
     candidates = solve_dual_mod(equations)
+    candidates = [c for c in candidates if 32 <= c <= 126]  # assume ASCII
+
     if len(candidates) == 1:
         salt += chr(candidates[0])
         print(f"salt: {salt}")
