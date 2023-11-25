@@ -78,11 +78,12 @@ for idx in range(0, 42):
     request = (42 - idx) * 44 + 43
     result = encode_oracle(request)
     print(f"{request} -> {result}")
+    lottery = result[0]
     char = result[1]
-    original_pos = after_first_shuffle.index(char)
+    intermediate_alphabet = partial_shuffle(after_first_shuffle, lottery + salt)
+    original_pos = intermediate_alphabet.index(char)
     new_pos = 43 - idx
     mod = new_pos - 1
-    lottery = result[0]
     integer_sum = ord(lottery) + sum([ord(c) for c in salt[0:idx]])
     salt_sum = (original_pos - integer_sum - idx - 1) % mod
     print(f"2 x salt[{idx}] = {original_pos} - {integer_sum} - {idx + 1} = {salt_sum} mod {mod}")
